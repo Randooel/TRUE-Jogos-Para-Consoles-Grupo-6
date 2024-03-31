@@ -2,6 +2,7 @@
 private void main()
 {
     Print()
+    Console.WriteLine("Tchau, carinha!")
 }
 
 public void Print()
