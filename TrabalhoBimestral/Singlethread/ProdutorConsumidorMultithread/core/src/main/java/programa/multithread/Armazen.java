@@ -16,8 +16,6 @@ public class Armazen {
 
     private String[] ultimoProdutorString;
     private String[] ultimoConsumidorString;
-    
-    Semaphore armazenarSemaphore = new Semaphore(1);
 
     public Armazen(double capacidadeMaxima) {
     	recursosPossiveis = SetRecursos();
@@ -74,12 +72,6 @@ public class Armazen {
     
     public void adicionarRecurso(int novoItemID, String produtorNome) {
     	
-    	try {
-    		armazenarSemaphore.acquire();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-    	
         if (estoqueRecursos.get(recursosPossiveis[novoItemID]) < capacidadeMaxima) {
         	AdicionarResourcesNoEstoque(novoItemID);
             this.ultimoProdutorString[0] = recursosPossiveis[novoItemID];
@@ -88,7 +80,6 @@ public class Armazen {
         } else {
             this.ultimoProdutorString[2] = "Armazém cheio! Não é possível adicionar mais recursos.";
         }
-        armazenarSemaphore.release();
     }
     
     private void AdicionarResourcesNoEstoque(int novoItemID) {
@@ -103,11 +94,6 @@ public class Armazen {
     
     public void adicionarProduto(int novoItemID, String consumidorNome) {
     	
-    	try {
-    		armazenarSemaphore.acquire();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
     	
         	AdicionarProdutoNoEstoque(novoItemID);
             this.ultimoConsumidorString[0] = produtosPossiveis[novoItemID];
@@ -115,7 +101,6 @@ public class Armazen {
             //this.ultimoConsumidorString[2] = "Produto " + produtosPossiveis[novoItemID] + " foi adicionado ao armazém por " + produtorNome + ".";
 
             
-            armazenarSemaphore.release();
     }
 
 	public void AdicionarProdutoNoEstoque(int novoItemID) {
