@@ -2,11 +2,10 @@ package programa.multithread;
 
 import java.util.Random;
 
-public class Consumidor {
+public class Consumidor extends Thread {
 
     private String nome;
     private double velocidadeConsumo;
-    private double tempoAtual = 0;
     private Random random;
     private Armazen armazem;
     private int recursoUtilizadoA, recursoUtilizadoB;
@@ -23,16 +22,14 @@ public class Consumidor {
         this.recursoUtilizadoB = recursoUtilizadoB;
         this.recursoProduzido = recursoProduzido;
     }
-    
-    public void TentarConsumir(float deltaTime) {
-    	
-    	if(tempoAtual < velocidadeConsumo){
-    		tempoAtual += deltaTime;
-    	}
-        else{
-        	tempoAtual =0;
+
+    @Override
+    public void run() {
+    	while (true) {
+            try {
             	long startTime = System.currentTimeMillis();
                 // Simula o tempo necessário para consumir um recurso com base na velocidade de consumo
+                Thread.sleep((long) (velocidadeConsumo * 1000));
 
                 if (TryConsumeItems()) {
 
@@ -47,14 +44,16 @@ public class Consumidor {
                 } else {
                     System.out.println("Armazém sem recursos! " + nome + " está esperando por novos recursos.");
                 }
-                tempoAtual = 0;
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
     }
 
     private boolean TryConsumeItems() {
 		
     	if(armazem.HaveItemInList(recursoUtilizadoA) && armazem.HaveItemInList(recursoUtilizadoB)) {
-    		
     		armazem.RemoveResourcesNoEstoque(recursoUtilizadoA);
     		armazem.RemoveResourcesNoEstoque(recursoUtilizadoB);
     		return true;	
